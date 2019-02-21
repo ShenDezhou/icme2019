@@ -20,4 +20,11 @@ http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_t
 #成绩
 finish-score, like-score = [0.56782278397016517, 0.59790479687615328]
 
+#Rank
+95	
+dezhou
+0.57685 (0.57,0.60)	1
+
+#哈哈，好low啊
+
 
