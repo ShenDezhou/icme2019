@@ -10,7 +10,7 @@ ShenDezhou
 #准备
 创建input文件夹
 训练集地址：
-http://lf1-ttcdntos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_train.txt.tgz
+http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_train.txt.tgz
 测试集地址：
 http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_test_no_anwser.txt.tgz
 
