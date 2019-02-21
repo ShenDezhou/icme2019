@@ -27,6 +27,7 @@ dezhou
 
 #哈哈，好low啊
 
+##下面是抖音公司的Baseline，用训练集跑出来的结果应该是finish-score, like-score = 0.70671501437, 0.920829590357
 
 ## 方案说明
 - 特征：均为原始特征，不包含多媒体内容特征。使用到的特征字段 ['uid', 'user_city', 'item_id', 'author_id', 'item_city', 'channel',
