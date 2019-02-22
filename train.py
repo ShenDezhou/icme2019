@@ -11,13 +11,28 @@ loss_weights = [0.7, 0.3, ]  # [0.7,0.3]任务权重可以调下试试
 VALIDATION_FRAC = 0.2  # 用做线下验证数据比例
 
 if __name__ == "__main__":
-    data = pd.read_csv('./input/final_track2_train.txt', sep='\t', names=[
-        'uid', 'user_city', 'item_id', 'author_id', 'item_city', 'channel', 'finish', 'like', 'music_id', 'did', 'creat_time', 'video_duration'])
+    data = pd.read_csv('./input/final_track1_train.txt', sep='\t', names=[
+        'uid', 'user_city', 'item_id', 'author_id', 'item_city', 'channel', 'finish', 'like', 'music_id', 'did', 'creat_time', 'video_duration'], iterator=True)
     
-    data=data.take(list(range(10000)), axis=0)
+    take=[]
+    loop = True
+    while loop:
+        try:
+            chunk=data.get_chunk(10000)
+            chunk=chunk.take(list(range(100)), axis=0)
+            take.append(chunk)
+        except StopIteration:
+            loop=False
+            print('stop iteration')
+    
+    data = pd.concat(take, ignore_index=True)        
+#     for i in range(int(data.shape[0]/10000-1)):
+#         take.extend(list(range(i*100,(i+1)*100)))
+#     data = data.take(take, axis=0)
+    print(data.shape[0])
     
     if ONLINE_FLAG:
-        test_data = pd.read_csv('./input/final_track2_test_no_anwser.txt', sep='\t', names=[
+        test_data = pd.read_csv('./input/final_track1_test_no_anwser.txt', sep='\t', names=[
                                 'uid', 'user_city', 'item_id', 'author_id', 'item_city', 'channel', 'finish', 'like', 'music_id', 'did', 'creat_time', 'video_duration'])
         train_size = data.shape[0]
         data = data.append(test_data)
@@ -60,11 +75,12 @@ if __name__ == "__main__":
                          "dense": dense_feature_list})
     model.compile("adagrad", loss='binary_crossentropy', loss_weights=loss_weights, metrics=[auroc])
     
-    my_callbacks = [EarlyStopping(monitor=auroc, patience=50, verbose=1, mode='max')]
+    my_callbacks = [EarlyStopping(monitor=auroc, min_delta=1e-6, patience=10, verbose=1, mode='max')]
     
     if ONLINE_FLAG:
         history = model.fit(train_model_input, train_labels,
-                            batch_size=4096, epochs=100, verbose=1)
+                            batch_size=4096, epochs=100, verbose=1,
+                            callbacks=my_callbacks)
         pred_ans = model.predict(test_model_input, batch_size=2**14)
 
     else:
