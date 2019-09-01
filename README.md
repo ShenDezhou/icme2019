@@ -1,29 +1,67 @@
 # icme2019
 短视频内容理解与推荐竞赛
 
-#Author
+#战队成员  
+chdwwk
+yufang
+*dezhou
+levio
+
+
+#Author  
 ShenDezhou
 
-#Version
-1.0
+#Version  
+8.0
 
-#准备
-创建input文件夹
+#入口  
+automodel.py(legacy and golden entry, Track2 AUC=0.72(100%data), Track1 AUC=0.70（10%data）)  
+automodel_batch.py(8.0 testing 7.0 AUC=0.52 6.0 AUC=0.52)  
+train.py(baseline entrypoint, Good place to start)  
+
+
+#changelog  
+1.0使用前10000条  
+2.0使用每10000条前100条  
+3.0使用全量track2记录，但由于GPU内存不足，xDeepFM的embedding使用了1个  
+4.0使用1%track1数据，2758600 records, 50 epochs, loss: 0.146  
+5.0使用10%track2数据，PNN算法跑到0.68，目前的SOTA算法  
+6.0增加新入口，使用batch模式来训练模型，待验证。  
+7.0针对6.0分块训练结果不理想的问题，重新修改了逻辑，基本跟automodel.py一样，只是保留了一些enhancement，比如sparse feature分析的代码。  
+7.1我的850MGPU只有1.9G，用Track2全量时，模型太大无法装入显存，于是把PNN模型的embedding_size改成1，ROC——AUC只有0.54，这样看来使用大内存更好。
+8.0在Track1上运行算法，使用10%数据集，运行4Epochs就收敛停止了，0.70445 (0.65,0.84)，RANK#35  
+8.1在Track2下使用100%数据集，由于GPU显存原因Embedding Size=2，训练结束Score=0.51，入口代码使用automode_batch.py,需要更大的显存重新跑这一版
+
+#准备  
+创建input文件夹  
+Track1：  
+训练集地址：
+http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track1_train.txt.tgz
+测试集地址：
+http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track1_test_no_anwser.txt.tgz
+
+TRACK2  
 训练集地址：
 http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_train.txt.tgz
 测试集地址：
 http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_test_no_anwser.txt.tgz
 
-#训练
+#训练  
 代码中使用了10000行数据进行100轮训练，该训练集上的结果为AUC1.0 1.0
 
-#成绩
-finish-score, like-score = [0.56782278397016517, 0.59790479687615328]
+#成绩  
+0.576847387841962
+track2: f, l = [0.56782278397016517, 0.59790479687615328]  
+0.623347830227737
+track2: f, l = [0.60371408494758505, 0.6691599025480921]  
+0.724962529711026
+track2: f, l = [0.65664805622285116, 0.88436296785010238]  
 
-#Rank
-95	
-dezhou
-0.57685 (0.57,0.60)	1
+
+#Rank  
+95     dezhou 0.57685 (0.57,0.60)	1  
+130	levio 	0.72496 (0.66,0.88)	3  
+225    tpt    0.72496 (0.66,0.88)	6  
 
 #哈哈，好low啊
 

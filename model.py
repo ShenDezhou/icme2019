@@ -4,9 +4,9 @@ from deepctr.layers.core import MLP, PredictionLayer
 from deepctr.layers.interaction import CIN
 from deepctr.layers.utils import concat_fun
 from deepctr.utils import check_feature_config_dict
+from keras.utils import plot_model
 
-
-def xDeepFM_MTL(feature_dim_dict, embedding_size=8, hidden_size=(256, 256), cin_layer_size=(256, 256,),
+def xDeepFM_MTL(feature_dim_dict, embedding_size=1, hidden_size=(256, 256), cin_layer_size=(256, 256,),
                 cin_split_half=True,
                 task_net_size=(128,), l2_reg_linear=0.00001, l2_reg_embedding=0.00001,
                 seed=1024, ):
@@ -47,4 +47,5 @@ def xDeepFM_MTL(feature_dim_dict, embedding_size=8, hidden_size=(256, 256), cin_
     output_like = PredictionLayer('sigmoid', name='like')(like_logit)
     model = tf.keras.models.Model(inputs=inputs_list, outputs=[
                                   output_finish, output_like])
+    plot_model(model, to_file='model.png')
     return model

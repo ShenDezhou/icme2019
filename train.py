@@ -10,6 +10,8 @@ ONLINE_FLAG = True
 loss_weights = [0.7, 0.3, ]  # [0.7,0.3]任务权重可以调下试试
 VALIDATION_FRAC = 0.2  # 用做线下验证数据比例
 
+VERSION=4
+
 if __name__ == "__main__":
     data = pd.read_csv('./input/final_track1_train.txt', sep='\t', names=[
         'uid', 'user_city', 'item_id', 'author_id', 'item_city', 'channel', 'finish', 'like', 'music_id', 'did', 'creat_time', 'video_duration'], iterator=True)
@@ -19,16 +21,21 @@ if __name__ == "__main__":
     while loop:
         try:
             chunk=data.get_chunk(10000)
-            chunk=chunk.take(list(range(100)), axis=0)
+            if VERSION==1:
+                take.append(chunk)
+                break
+            if VERSION==2:
+                chunk=chunk.take(list(range(100)), axis=0)
+            if VERSION==4:
+                chunk=chunk.take(list(range(100)), axis=0)
             take.append(chunk)
+            
         except StopIteration:
             loop=False
             print('stop iteration')
     
     data = pd.concat(take, ignore_index=True)        
-#     for i in range(int(data.shape[0]/10000-1)):
-#         take.extend(list(range(i*100,(i+1)*100)))
-#     data = data.take(take, axis=0)
+
     print(data.shape[0])
     
     if ONLINE_FLAG:
@@ -71,11 +78,18 @@ if __name__ == "__main__":
     train_labels = [train[target[0]].values, train[target[1]].values]
     test_labels = [test[target[0]].values, test[target[1]].values]
 
+    embedding_size=8
+    hidden_size=(256, 256)
+    if VERSION==3:
+        embedding_size=1
+    if VERSION==4:
+        embedding_size=1
+        hidden_size=(64,64)
     model = xDeepFM_MTL({"sparse": sparse_feature_list,
-                         "dense": dense_feature_list})
+                         "dense": dense_feature_list}, embedding_size=embedding_size, hidden_size=hidden_size)
     model.compile("adagrad", loss='binary_crossentropy', loss_weights=loss_weights, metrics=[auroc])
     
-    my_callbacks = [EarlyStopping(monitor=auroc, min_delta=1e-6, patience=10, verbose=1, mode='max')]
+    my_callbacks = [EarlyStopping(monitor='loss', min_delta=1e-2, patience=10, verbose=1, mode='min')]
     
     if ONLINE_FLAG:
         history = model.fit(train_model_input, train_labels,
