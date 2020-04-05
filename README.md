@@ -34,17 +34,9 @@ train.py(baseline entrypoint, Good place to start)
 
 #准备  
 创建input文件夹  
-Track1：  
-训练集地址：
-http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track1_train.txt.tgz
-测试集地址：
-http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track1_test_no_anwser.txt.tgz
-
-TRACK2  
-训练集地址：
-http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_train.txt.tgz
-测试集地址：
-http://lf1-ttcdn-tos.pstatp.com/obj/icme2019&bytedance_challenge_dataset/final_track2_test_no_anwser.txt.tgz
+Track1、TRACK2  
+https://pan.baidu.com/s/1YDJ1yRy3m0KvlvTKJ7_jdg
+提取码：6v34
 
 #训练  
 代码中使用了10000行数据进行100轮训练，该训练集上的结果为AUC1.0 1.0
